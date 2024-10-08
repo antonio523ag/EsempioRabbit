@@ -12,6 +12,7 @@ import org.elis.chat.model.Chat;
 import org.elis.chat.model.Messaggio;
 import org.elis.chat.model.Utente;
 import org.elis.chat.service.def.ChatService;
+import org.elis.chat.service.def.CustomSenderMessaggioService;
 import org.elis.chat.service.def.MessaggioService;
 import org.elis.chat.service.def.UtenteService;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class Facade {
 	private final UtenteService utenteService;
 	private final MessaggioService messaggioService;
 	private final ChatService chatService;
-	
+	private final CustomSenderMessaggioService customSenderMessaggioService;
 	private final ChatMapper chatMapper;
 	private final UtenteMapper utenteMapper;
 	
@@ -56,6 +57,9 @@ public class Facade {
 		m.setTesto(request.getTesto());
 		m.setPrimoUtente(c.getUtenteUno().getUsername().equals(u1.getUsername()));
 		messaggioService.aggiungiMessaggio(m);
+		MessaggioDTO mDTO=chatMapper.toMessaggioDTO(u1, u2, m);
+		//TODO cambiare il topic di esempio nella chiave per singolo utente (la mail)
+		customSenderMessaggioService.inviaNotifica(mDTO, "topicDiEsempio");
 	}
 
 	public List<MessaggioDTO> getChat(long id, String username) {
