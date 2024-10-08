@@ -1,0 +1,54 @@
+package org.elis.chat.service.impl;
+
+import java.util.List;
+
+import org.elis.chat.model.Chat;
+import org.elis.chat.model.Utente;
+import org.elis.chat.repository.ChatRepository;
+import org.elis.chat.service.def.ChatService;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class ChatServiceImpl implements ChatService {
+	private final ChatRepository repo;
+
+	@Override
+	public List<Chat> getAllByUsername(String username) {
+		return repo.findAllByUsername(username);
+	}
+
+	@Override
+	public Chat getByUsernameAndAltroNome(String username, String secondoUsername) {
+		Chat c=repo.findAllByUsername(username, secondoUsername).orElse(null);
+		return c;
+	}
+
+	@Override
+	public void creaChat(Utente utenteUno, Utente utenteDue) {
+		Chat c=getByUsernameAndAltroNome(utenteUno.getUsername(), utenteDue.getUsername());
+		if(c!=null) throw new ResponseStatusException(HttpStatus.CONFLICT);
+		c=new Chat();
+		c.setUtenteDue(utenteDue);
+		c.setUtenteUno(utenteUno);
+		repo.save(c);
+		
+	}
+
+	@Override
+	public Chat salva(Chat c) {
+		if(c.getId()!=0||c.getUtenteUno()==null||c.getUtenteDue()==null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		}
+		if(getByUsernameAndAltroNome(c.getUtenteUno().getUsername(), c.getUtenteDue().getUsername())!=null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		}
+		
+		
+		return repo.save(c);
+	}
+	
+}
