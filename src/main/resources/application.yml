@@ -1,0 +1,24 @@
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /api
+
+spring:
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: root
+    url: jdbc:h2:mem:testRabbit
+    password: toor
+
+  h2:
+    console:
+      enabled: true
+      path: /all/consoleh2
+  web:
+    error:
+      include-binding-errors: always

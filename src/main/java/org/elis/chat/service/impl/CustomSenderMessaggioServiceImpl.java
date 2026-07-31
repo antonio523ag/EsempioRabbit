@@ -7,10 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -24,10 +24,10 @@ public class CustomSenderMessaggioServiceImpl implements CustomSenderMessaggioSe
 	@Override
 	public void inviaNotifica(MessaggioDTO m, String topic) {
 		
-		String json=null;
+		String json;
 		try {
 			json=mapper.writeValueAsString(m);
-		}catch (JsonProcessingException e) {
+		}catch (JacksonException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage());
 		}
 		
